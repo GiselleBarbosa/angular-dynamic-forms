@@ -1,20 +1,19 @@
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
-import { QuestionBase } from './shared/components/models/question-base.model';
+import { Component, OnInit } from '@angular/core';
+
 import { QuestionService } from './shared/services/question.service';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [QuestionService],
 })
-export class AppComponent {
-  title = 'angular-dynamic-forms';
+export class AppComponent implements OnInit {
+  public questions$ = this.questionService.question$;
 
-  questions$: Observable<QuestionBase<any>[]>;
+  constructor(private questionService: QuestionService) {}
 
-  constructor(service: QuestionService) {
-    this.questions$ = service.getQuestions();
+  ngOnInit(): void {
+    this.questionService.getQuestions().pipe(first()).subscribe();
   }
 }

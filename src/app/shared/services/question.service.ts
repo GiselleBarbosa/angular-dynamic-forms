@@ -1,44 +1,29 @@
-import { DropdownQuestion } from '../components/models/question-dropdown.model';
+import { Observable, Subject, tap } from 'rxjs';
+
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { QuestionBase } from '../components/models/question-base.model';
-import { TextboxQuestion } from '../components/models/question-textbox.model';
-import { of } from 'rxjs';
+import { QuestionBase } from './../components/models/question-base.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuestionService {
-  // TODO: get from a remote source of question metadata
-  getQuestions() {
-    const questions: QuestionBase<string>[] = [
-      new DropdownQuestion({
-        key: 'brave',
-        label: 'Bravery Rating',
-        options: [
-          { key: 'solid', value: 'Solid' },
-          { key: 'great', value: 'Great' },
-          { key: 'good', value: 'Good' },
-          { key: 'unproven', value: 'Unproven' },
-        ],
-        order: 3,
-      }),
+  private readonly dropdownQuestionAPI = environment.questionAPI;
 
-      new TextboxQuestion({
-        key: 'firstName',
-        label: 'First name',
-        value: 'Bombasto',
-        required: true,
-        order: 1,
-      }),
+  private readonly questionObservable = new Subject<QuestionBase<string>[]>();
+  public question$ = this.questionObservable.asObservable();
 
-      new TextboxQuestion({
-        key: 'emailAddress',
-        label: 'Email',
-        type: 'email',
-        order: 2,
-      }),
-    ];
+  private constructor(private http: HttpClient) {}
 
-    return of(questions.sort((a, b) => a.order - b.order));
+  public getQuestions(): Observable<QuestionBase<string>[]> {
+    return this.http
+      .get<QuestionBase<string>[]>(`${this.dropdownQuestionAPI}`)
+      .pipe(
+        tap((questions) => {
+          this.questionObservable.next(questions);
+          console.log(questions);
+        })
+      );
   }
 }
