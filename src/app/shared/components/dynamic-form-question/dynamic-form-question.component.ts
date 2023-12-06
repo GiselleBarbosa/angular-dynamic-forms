@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+
+import { FormGroup } from '@angular/forms';
+import { QuestionBase } from '../models/question-base.model';
 
 @Component({
-  selector: 'app-dynamic-form-question',
+  selector: 'app-question',
   templateUrl: './dynamic-form-question.component.html',
-  styleUrls: ['./dynamic-form-question.component.scss']
+  styleUrls: ['./dynamic-form-question.component.scss'],
 })
-export class DynamicFormQuestionComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
+export class DynamicFormQuestionComponent {
+  @Input() question!: QuestionBase<string>;
+  @Input() form!: FormGroup;
+  get isValid() {
+    return this.form.controls[this.question.key].valid;
   }
-
 }
