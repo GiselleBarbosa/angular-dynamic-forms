@@ -24,7 +24,6 @@ export class QuestionService {
         catchError(this.handleError),
         tap((questions) => {
           this.questionObservable.next(questions);
-          console.log(questions);
         })
       )
       .subscribe();
