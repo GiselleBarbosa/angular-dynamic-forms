@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
 import { QuestionService } from './shared/services/question.service';
-import { first } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +13,6 @@ export class AppComponent implements OnInit {
   constructor(private questionService: QuestionService) {}
 
   ngOnInit(): void {
-    this.questionService.getQuestions().pipe(first()).subscribe();
+    this.questionService.getQuestions();
   }
 }
